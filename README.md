@@ -8,6 +8,8 @@ APP_URL=http://api.blog-local.com
 
 FRONTEND_URL=http://blog-local.com:3000
 # Incase be and fe domain are difference we must specify SESSION_DOMAIN
+# The set-cookie will apply for be (api.blog-local.com) not fe( blog-local.com)
+# XSRF-TOKEN cookie will empty → axios can't get XSRF-TOKEN → X-CSRF-TOKEN header empty
 #SESSION_DOMAIN=.blog-local.com
 SANCTUM_STATEFUL_DOMAINS=blog-local.com:3000
 ```
@@ -34,5 +36,6 @@ useEffect(() => {
 ```
 
 ### Trouble
+- Clear cookie of `blog-local.com`, `api.blog-local.com`
 ![image](https://github.com/pnlinh-it/blog-be/assets/11713395/f58e625a-fd7e-49a6-8687-8a3fb423d2ce)
 
