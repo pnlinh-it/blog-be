@@ -32,6 +32,8 @@ useEffect(() => {
   fetch();
 }, []);
 ```
+## Login with Google
+- https://console.cloud.google.com/apis/credentials?project=blog-395101
 
 ### Trouble
 ![image](https://github.com/pnlinh-it/blog-be/assets/11713395/f58e625a-fd7e-49a6-8687-8a3fb423d2ce)
