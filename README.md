@@ -34,7 +34,20 @@ useEffect(() => {
 ```
 ## Login with Google
 - https://console.cloud.google.com/apis/credentials?project=blog-395101
+- https://github.com/pnlinh-it/blog-be/pull/2
 
+Put `Route::get('/oauth/google/callback', handler)` into `routes/web.php`
+
+```php
+/**
+ * Put that route here to use web's middleware @see \App\Http\Kernel
+ *
+ * That will ensure cookie is set after google redirect user to our callback
+ * By default EnsureFrontendRequestsAreStateful middleware will add cookie middleware
+ * by check referer or origin but Google redirect has no these headers
+ */
+Route::get('/oauth/google/callback', [GoogleLoginController::class, 'callback']);
+```
 ### Trouble
 ![image](https://github.com/pnlinh-it/blog-be/assets/11713395/f58e625a-fd7e-49a6-8687-8a3fb423d2ce)
 
