@@ -8,6 +8,9 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+ij_any_line_comment_at_first_column = false
+ij_any_line_comment_add_space = true
+
 [*.md]
 trim_trailing_whitespace = false
 
