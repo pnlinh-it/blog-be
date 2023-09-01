@@ -19,6 +19,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    Route::group(['prefix' => 'posts'], function () {
+        Route::get('/{post}', [PostController::class, 'show']);
+        Route::post('/', [PostController::class, 'store']);
+        Route::put('/{post}', [PostController::class, 'update']);
+    });
 });
 
 require __DIR__ . '/auth.php';
