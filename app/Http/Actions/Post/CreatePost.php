@@ -4,6 +4,8 @@ namespace App\Http\Actions\Post;
 
 use App\Http\Actions\BaseApiAction;
 use App\Models\Post;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class CreatePost extends BaseApiAction
 {
@@ -19,6 +21,26 @@ class CreatePost extends BaseApiAction
     {
         $data = $this->validate($data);
 
+        Arr::set($data, 'slug', $this->createSlug(Arr::get($data, 'title')));
+
         return Post::create($data);
+    }
+
+    public function createSlug(string $title)
+    {
+        $slug = Str::substr($title, 0, 250);
+        $originalSlug = $slug;
+        $i = 1;
+
+        while ($this->isSlugExist($slug)) {
+            $slug = $originalSlug . '-' . $i++;
+        }
+
+        return $slug;
+    }
+
+    public function isSlugExist(string $slug): bool
+    {
+        return Post::where('slug', $slug)->exists();
     }
 }

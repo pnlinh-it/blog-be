@@ -11,7 +11,7 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content'];
+    protected $fillable = ['title', 'slug', 'content'];
 
     public function scopeCreatedBefore(Builder $query, $date): Builder
     {
