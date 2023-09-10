@@ -26,7 +26,8 @@ class CreatePost extends BaseApiAction
         return Post::create($data);
     }
 
-    public function createSlug(string $title)
+    // https://github.com/spatie/laravel-sluggable/blob/main/src/HasSlug.php#L133
+    public function createSlug(string $title): string
     {
         $slug = Str::substr($title, 0, 250);
         $originalSlug = $slug;
