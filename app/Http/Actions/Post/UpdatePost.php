@@ -4,6 +4,7 @@ namespace App\Http\Actions\Post;
 
 use App\Http\Actions\BaseApiAction;
 use App\Models\Post;
+use Illuminate\Support\Arr;
 
 class UpdatePost extends BaseApiAction
 {
@@ -19,12 +20,20 @@ class UpdatePost extends BaseApiAction
         return [
             'title' => ['required'],
             'content' => ['required'],
+            'tags' => ['sometimes', 'array'],
+            'tags.*' => ['required', 'exists:tags,id'],
         ];
     }
 
     public function execute(array $data): Post
     {
-        $this->post->update($this->validate($data));
+        $data = $this->validate($data);
+
+        $this->post->update($data);
+
+        if ($tagIds = Arr::get($data, 'tags')) {
+            $this->post->tags()->sync($tagIds);
+        }
 
         return $this->post;
     }

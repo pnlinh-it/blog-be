@@ -24,7 +24,7 @@ class GoogleLoginController extends Controller
     public function callback()
     {
         // TODO update later
-        Auth::login(User::firstOrFail());
+        Auth::login(User::firstOrFail(), remember: true);
 
         return Redirect::to(config('app.frontend_url'));
     }

@@ -6,6 +6,7 @@ use App\Http\Actions\Post\CreatePost;
 use App\Http\Actions\Post\UpdatePost;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\TagResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -49,7 +50,9 @@ class PostController extends Controller
     }
     public function show(Post $post)
     {
-        return $post;
+        $post->load('tags');
+
+        return new PostResource($post);
     }
 
     public function store(Request $request)

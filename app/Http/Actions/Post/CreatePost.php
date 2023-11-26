@@ -14,6 +14,8 @@ class CreatePost extends BaseApiAction
         return [
             'title' => ['required'],
             'content' => ['required'],
+            'tags' => ['sometimes', 'array'],
+            'tags.*' => ['required', 'exists:tags,id'],
         ];
     }
 
@@ -23,7 +25,13 @@ class CreatePost extends BaseApiAction
 
         Arr::set($data, 'slug', $this->createSlug(Arr::get($data, 'title')));
 
-        return Post::create($data);
+        $post = Post::create($data);
+
+        if ($tagIds = Arr::get($data, 'tags')) {
+            $post->tags()->sync($tagIds);
+        }
+
+        return $post;
     }
 
     // https://github.com/spatie/laravel-sluggable/blob/main/src/HasSlug.php#L133
