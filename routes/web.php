@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleLoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,8 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return ['Laravel' => app()->version()];
-});
-
-require __DIR__.'/auth.php';
+/**
+ * Put that route here to use web's middleware @see \App\Http\Kernel
+ *
+ * That will ensure cookie is set after google redirect user to our callback
+ * By default api route has no Cookie middleware
+ * But Sanctum add EnsureFrontendRequestsAreStateful middleware to handle Cookie
+ * EnsureFrontendRequestsAreStateful check referer or origin but Google redirect has no these headers
+ * @see EnsureFrontendRequestsAreStateful::fromFrontend()
+ */
+Route::get('/api/oauth/google/callback', [GoogleLoginController::class, 'callback']);

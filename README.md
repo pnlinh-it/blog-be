@@ -34,6 +34,64 @@ useEffect(() => {
   fetch();
 }, []);
 ```
+## Login with Google
+- https://console.cloud.google.com/apis/credentials?project=blog-395101
+- https://github.com/pnlinh-it/blog-be/pull/2
+
+Put `Route::get('/api/oauth/google/callback', handler)` into `routes/web.php`
+
+```php
+/**
+ * Put that route to use web's middleware @see \App\Http\Kernel
+ *
+ * That will ensure Cookie is set after google redirect user to our callback
+ * By default api route has no Cookie middleware
+ * But Sanctum add EnsureFrontendRequestsAreStateful middleware to handle Cookie
+ * EnsureFrontendRequestsAreStateful check referer or origin but Google redirect has no these headers
+ * @see EnsureFrontendRequestsAreStateful::fromFrontend()
+ */
+Route::get('/api/oauth/google/callback', [GoogleLoginController::class, 'callback']);
+```
+
+### Use both frontend and backend for same domain with nginx
+```conf
+server {
+    listen 80;
+    server_name blog-local.com;
+    server_tokens off;
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+server {
+        server_name blog-local.com;
+        listen 443 ssl ;
+        location / {
+            proxy_pass http://localhost:3000;
+            set $upstream_keepalive false;
+        }
+        location /api/ {
+            proxy_pass http://blog-local.com:8080/api/;
+        }
+        location /ws {
+            proxy_pass              http://localhost:3000;
+            proxy_set_header Host  $host;
+            proxy_read_timeout     60;
+            proxy_connect_timeout  60;
+            proxy_redirect         off;
+
+            # Allow the use of websockets
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+        }
+        include /Users/linh/Desktop/Dev/Web/PHP/self-signed.nginx.conf;
+        include /Users/linh/Desktop/Dev/Web/PHP/ssl-params.nginx.conf;
+}
+```
 
 ### Trouble
 - Clear cookie of `blog-local.com`, `api.blog-local.com`

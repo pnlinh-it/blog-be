@@ -1,0 +1,49 @@
+name: Build and publish Docker image
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Docker meta
+        id: docker_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/pnlinh-it/blog-api
+          tags: |
+            type=semver,pattern={{version}}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          # platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
+
+      - name: Login to GitHub container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: pnlinh-it
+          password: ${{ secrets.CR_PAT }}
+
+      - name: Build and push Docker images
+        id: docker_build
+        uses: docker/build-push-action@v5
+        with:
+          # platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
+          push: true
+          file: ./Dockerfile.prod
+          context: .
+          tags: ${{ steps.docker_meta.outputs.tags }}
