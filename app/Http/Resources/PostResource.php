@@ -14,6 +14,7 @@ class PostResource extends JsonResource
             'title' => $this->title,
             'content' => $this->content,
             'tags' => TagResource::collection($this->whenLoaded('tags')),
+            'created_at' => $this->created_at,
         ];
     }
 }
