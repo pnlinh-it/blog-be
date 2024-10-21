@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CookieController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\UploadController;
@@ -35,6 +36,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     Route::post('/upload/media', [UploadController::class, 'store']);
+});
+
+Route::group(['prefix' => 'cks'], function () {
+    Route::post('/', [CookieController::class, 'store']);
 });
 
 require __DIR__ . '/auth.php';
